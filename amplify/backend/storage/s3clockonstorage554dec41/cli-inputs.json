@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3clockonstorage554dec41",
+  "bucketName": "clockon-storage-554dec41",
+  "policyUUID": "165a3684",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

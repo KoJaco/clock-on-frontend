@@ -3,7 +3,6 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "@/styles/Home.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +27,7 @@ function Home({ signOut, user, renderedAt }: Props) {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className={styles.main}>
+            <main className="">
                 <div style={{ padding: 50 }}>
                     <h1>Logged in as {user.username}.</h1>
                     <div>
