@@ -67,13 +67,13 @@ async function confirmSignUp(
 }
 
 async function signIn(
-    { username, password }: FormState,
+    { email, password }: FormState,
     setUser: (value: any) => void
 ) {
-    if (username && password) {
+    if (email && password) {
         try {
-            const user = await Auth.signIn(username, password);
-            const userInfo = { username: user.username, ...user.attributes };
+            const user = await Auth.signIn(email, password);
+            const userInfo = { email: user.email, ...user.attributes };
             setUser(userInfo);
         } catch (err) {
             console.log('error signing in: ', err);
@@ -144,6 +144,9 @@ const Form = (props: FormProps) => {
                     <SignIn
                         signIn={() => signIn(formState, props.setUser)}
                         updateFormState={(e) => updateForm(e)}
+                        updateFormType={(e) =>
+                            setFormType(e.currentTarget.name)
+                        }
                     />
                 );
             case 'forgotPassword':
@@ -172,7 +175,7 @@ const Form = (props: FormProps) => {
     return (
         <div>
             {renderForm()}
-            {formType === 'signUp' && (
+            {/* {formType === 'signUp' && (
                 <p>
                     Already have an account?{' '}
                     <span onClick={() => setFormType('signIn')}>Sign In</span>
@@ -193,7 +196,7 @@ const Form = (props: FormProps) => {
                         </button>
                     </p>
                 </>
-            )}
+            )} */}
         </div>
     );
 };

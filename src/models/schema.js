@@ -223,7 +223,7 @@ export const schema = {
                 "content": {
                     "name": "content",
                     "isArray": false,
-                    "type": "String",
+                    "type": "AWSJSON",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -385,5 +385,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.5",
-    "version": "c705fe99378afab5650befbef103865f"
+    "version": "8eb000610b9b4cfba96fd9a73d6ddceb"
 };

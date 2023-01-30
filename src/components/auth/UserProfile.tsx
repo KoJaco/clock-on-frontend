@@ -26,7 +26,7 @@ const UserProfile = () => {
         // validation for user fields.
         try {
             const data = await Auth.currentUserPoolUser();
-            const userInfo = { username: data.username, ...data.attributes };
+            const userInfo = { email: data.email, ...data.attributes };
             setUser(userInfo);
         } catch (err) {
             console.log('error: ', err);
@@ -38,7 +38,12 @@ const UserProfile = () => {
     }
 
     // catch null user case
-    if (!user || !user.username) return <Form setUser={setUser} />;
+    if (!user || !user.email)
+        return (
+            <AuthWrapper>
+                <Form setUser={setUser} />
+            </AuthWrapper>
+        );
 
     return (
         <AuthWrapper>

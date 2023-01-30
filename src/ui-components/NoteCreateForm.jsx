@@ -53,7 +53,7 @@ export default function NoteCreateForm(props) {
   };
   const validations = {
     title: [{ type: "JSON" }],
-    content: [],
+    content: [{ type: "JSON" }],
     createdAt: [],
     updatedAt: [],
     revisedTime: [],
@@ -177,11 +177,10 @@ export default function NoteCreateForm(props) {
         hasError={errors.title?.hasError}
         {...getOverrideProps(overrides, "title")}
       ></TextAreaField>
-      <TextField
+      <TextAreaField
         label="Content"
         isRequired={false}
         isReadOnly={false}
-        value={content}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -204,7 +203,7 @@ export default function NoteCreateForm(props) {
         errorMessage={errors.content?.errorMessage}
         hasError={errors.content?.hasError}
         {...getOverrideProps(overrides, "content")}
-      ></TextField>
+      ></TextAreaField>
       <TextField
         label="Created at"
         isRequired={false}

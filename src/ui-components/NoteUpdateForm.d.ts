@@ -31,7 +31,7 @@ export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes
 export declare type NoteUpdateFormOverridesProps = {
     NoteUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     title?: PrimitiveOverrideProps<TextAreaFieldProps>;
-    content?: PrimitiveOverrideProps<TextFieldProps>;
+    content?: PrimitiveOverrideProps<TextAreaFieldProps>;
     createdAt?: PrimitiveOverrideProps<TextFieldProps>;
     updatedAt?: PrimitiveOverrideProps<TextFieldProps>;
     revisedTime?: PrimitiveOverrideProps<TextFieldProps>;

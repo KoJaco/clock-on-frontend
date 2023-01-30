@@ -53,7 +53,11 @@ export default function NoteUpdateForm(props) {
         ? cleanValues.title
         : JSON.stringify(cleanValues.title)
     );
-    setContent(cleanValues.content);
+    setContent(
+      typeof cleanValues.content === "string"
+        ? cleanValues.content
+        : JSON.stringify(cleanValues.content)
+    );
     setCreatedAt(cleanValues.createdAt);
     setUpdatedAt(cleanValues.updatedAt);
     setRevisedTime(cleanValues.revisedTime);
@@ -70,7 +74,7 @@ export default function NoteUpdateForm(props) {
   React.useEffect(resetStateValues, [noteRecord]);
   const validations = {
     title: [{ type: "JSON" }],
-    content: [],
+    content: [{ type: "JSON" }],
     createdAt: [],
     updatedAt: [],
     revisedTime: [],
@@ -196,7 +200,7 @@ export default function NoteUpdateForm(props) {
         hasError={errors.title?.hasError}
         {...getOverrideProps(overrides, "title")}
       ></TextAreaField>
-      <TextField
+      <TextAreaField
         label="Content"
         isRequired={false}
         isReadOnly={false}
@@ -223,7 +227,7 @@ export default function NoteUpdateForm(props) {
         errorMessage={errors.content?.errorMessage}
         hasError={errors.content?.hasError}
         {...getOverrideProps(overrides, "content")}
-      ></TextField>
+      ></TextAreaField>
       <TextField
         label="Created at"
         isRequired={false}

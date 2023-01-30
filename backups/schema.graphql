@@ -17,8 +17,8 @@ type Tag @model @auth(rules: [{ allow: public }]) {
     id: ID!
     notes: [Note] @manyToMany(relationName: "NoteTag")
     text: String
-    createdAt: AWSDateTime!
-    updatedAt: AWSDateTime!
+    createdAt: AWSDateTime
+    updatedAt: AWSDateTime
     colorID: ID! @index(name: "byColor")
 }
 
@@ -27,7 +27,7 @@ type Note @model @auth(rules: [{ allow: public }]) {
     Tags: [Tag] @manyToMany(relationName: "NoteTag")
     title: AWSJSON
     content: AWSJSON
-    createdAt: AWSDateTime!
-    updatedAt: AWSDateTime!
+    createdAt: AWSDateTime
+    updatedAt: AWSDateTime
     revisedTime: AWSDateTime
 }

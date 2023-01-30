@@ -29,14 +29,11 @@ function Home({ signOut, user, renderedAt }: Props) {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="">
-                <div style={{ padding: 50 }}>
-                    {/* <h1>Logged in as {user.username}.</h1>
-                    <div>
-                        <button onClick={signOut}>Sign out</button>
-                    </div> */}
-                    <UserProfile />
-                    <p>This page was server-side rendered on {renderedAt}.</p>
+            <main className="h-auto">
+                <div className="h-screen">
+                    <div className="flex min-h-full">
+                        <UserProfile />
+                    </div>
                 </div>
             </main>
         </>
