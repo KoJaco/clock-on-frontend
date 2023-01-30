@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-clockon-dev-121304-authRole",
+      "UnauthRoleArn": "arn:aws:iam::454676828737:role/amplify-clockon-dev-121304-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::454676828737:role/amplify-clockon-dev-121304-authRole",
+      "Region": "ap-southeast-2",
+      "DeploymentBucketName": "amplify-clockon-dev-121304-deployment",
+      "UnauthRoleName": "amplify-clockon-dev-121304-unauthRole",
+      "StackName": "amplify-clockon-dev-121304",
+      "StackId": "arn:aws:cloudformation:ap-southeast-2:454676828737:stack/amplify-clockon-dev-121304/4022a3c0-a03b-11ed-a127-02a913b91416",
+      "AmplifyAppId": "d3d46ns6ma43om"
+    },
+    "categories": {
+      "auth": {
+        "clockon0751f856": {}
+      }
+    }
+  }
+}
