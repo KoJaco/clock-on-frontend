@@ -1,10 +1,12 @@
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import { withAuthenticator } from '@aws-amplify/ui-react';
 
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
+import Head from 'next/head';
+import Image from 'next/image';
+import { Inter } from '@next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
+import UserProfile from '@/components/auth/UserProfile';
+
+const inter = Inter({ subsets: ['latin'] });
 
 type Props = {
     signOut: any;
@@ -29,10 +31,11 @@ function Home({ signOut, user, renderedAt }: Props) {
             </Head>
             <main className="">
                 <div style={{ padding: 50 }}>
-                    <h1>Logged in as {user.username}.</h1>
+                    {/* <h1>Logged in as {user.username}.</h1>
                     <div>
                         <button onClick={signOut}>Sign out</button>
-                    </div>
+                    </div> */}
+                    <UserProfile />
                     <p>This page was server-side rendered on {renderedAt}.</p>
                 </div>
             </main>
@@ -42,11 +45,11 @@ function Home({ signOut, user, renderedAt }: Props) {
 
 export function getServerSideProps() {
     const renderedAt = new Date();
-    const formattedBuildDate = renderedAt.toLocaleDateString("en-US", {
-        dateStyle: "long",
+    const formattedBuildDate = renderedAt.toLocaleDateString('en-US', {
+        dateStyle: 'long',
     });
-    const formattedBuildTime = renderedAt.toLocaleTimeString("en-US", {
-        timeStyle: "long",
+    const formattedBuildTime = renderedAt.toLocaleTimeString('en-US', {
+        timeStyle: 'long',
     });
     return {
         props: {
@@ -55,4 +58,6 @@ export function getServerSideProps() {
     };
 }
 
-export default withAuthenticator(Home);
+export default Home;
+
+// export default withAuthenticator(Home);

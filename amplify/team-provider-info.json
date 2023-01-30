@@ -14,6 +14,9 @@
     "categories": {
       "auth": {
         "clockon0751f856": {}
+      },
+      "storage": {
+        "s3clockonstorage554dec41": {}
       }
     }
   }
