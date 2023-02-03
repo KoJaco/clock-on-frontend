@@ -19,7 +19,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
             </h2>
 
             <p className="mt-2 mb-6 text-sm">
-                A verification code will be sent to your email address shortly.
+                A verification code will be sent to your email
             </p>
             <div className="mb-6 flex">
                 <span className="w-full border-b border-slate-300 -translate-y-2"></span>
@@ -61,7 +61,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
                         type="submit"
                         className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                        Reset password
+                        Send Code
                     </button>
                 </div>
             </form>

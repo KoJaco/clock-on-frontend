@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { BsFacebook, BsApple, BsGoogle } from 'react-icons/bs';
+import ShowPasswordInput from './elements/ShowPasswordInput';
 
 import { useAuthStore } from '@/stores/AuthStore';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 type SignInProps = {
     signIn: () => void;
@@ -15,6 +17,8 @@ const SignIn = ({
     updateFormType,
     ...props
 }: SignInProps) => {
+    const [showPassword, setShowPassword] = useState(false);
+
     const { signInError } = useAuthStore();
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -127,17 +131,32 @@ const SignIn = ({
                         </div>
 
                         <div className="space-y-1">
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Password
-                            </label>
+                            <div className="flex items-end">
+                                <label
+                                    htmlFor="password"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Password
+                                </label>
+                                <button
+                                    type="button"
+                                    className="flex ml-auto text-slate-700 opacity-75 hover:opacity-100"
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
+                                >
+                                    {showPassword ? (
+                                        <AiOutlineEye />
+                                    ) : (
+                                        <AiOutlineEyeInvisible />
+                                    )}
+                                </button>
+                            </div>
                             <div className="mt-1">
                                 <input
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     onChange={(e) => {
                                         e.persist();
@@ -196,25 +215,6 @@ const SignIn = ({
                     </form>
                 </div>
             </div>
-
-            {/* <input
-                                name="username"
-                                onChange={(e) => {
-                                    e.persist();
-                                    updateFormState(e);
-                                }}
-                                placeholder="username"
-                            />
-            <input
-                type="password"
-                name="password"
-                onChange={(e) => {
-                    e.persist();
-                    updateFormState(e);
-                }}
-                placeholder="password"
-            /> */}
-            {/* <button onClick={signIn}>Sign In</button> */}
         </div>
     );
 };

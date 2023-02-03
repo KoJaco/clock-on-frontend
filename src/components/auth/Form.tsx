@@ -180,6 +180,9 @@ const Form = (props: FormProps) => {
                             confirmSignUp(formState, setFormType)
                         }
                         updateFormState={(e) => updateForm(e)}
+                        updateFormType={(e) =>
+                            setFormType(e.currentTarget.name)
+                        }
                     />
                 );
             case 'signIn':
@@ -213,6 +216,9 @@ const Form = (props: FormProps) => {
                             forgotPasswordSubmit(formState, setFormType)
                         }
                         updateFormState={(e) => updateForm(e)}
+                        updateFormType={(e) =>
+                            setFormType(e.currentTarget.name)
+                        }
                     />
                 );
             default:
