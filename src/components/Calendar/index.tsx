@@ -15,10 +15,16 @@ import {
     isSameWeek,
 } from 'date-fns';
 
-import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs';
+import {
+    BsArrowsCollapse,
+    BsArrowsExpand,
+    BsFillCheckCircleFill,
+} from 'react-icons/bs';
 import clsx from 'clsx';
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from 'react-icons/md';
 import Cell from './Cell';
+
+import { useApplicationStore } from '@/stores/ApplicationStore';
 
 const daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -28,8 +34,15 @@ type CalendarDaysProps = {
 };
 
 const Calendar = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [activeDate, setActiveDate] = useState(new Date());
+    const {
+        selectedDate,
+        setSelectedDate,
+        activeDate,
+        setActiveDate,
+        actingOnDateRange,
+        setActingOnDateRange,
+        setSelectedDateRange,
+    } = useApplicationStore();
 
     const [isMonthlyView, setIsMonthlyView] = useState(false);
 
@@ -43,7 +56,7 @@ const Calendar = () => {
                     <button
                         key={currentDate.toLocaleDateString()}
                         className={clsx(
-                            'py-1 hover:bg-gray-100 focus:z-10',
+                            'py-1 hover:bg-gray-100 focus:z-10 rounded-sm bg-white',
                             isSameMonth(currentDate, activeDate)
                                 ? 'bg-white'
                                 : 'bg-slate-50 py-1.5 text-gray-400',
@@ -81,7 +94,7 @@ const Calendar = () => {
             }
             return <>{week}</>;
         },
-        []
+        [setSelectedDate]
     );
 
     const getWeekDates = useCallback(() => {
@@ -95,7 +108,7 @@ const Calendar = () => {
         );
 
         return (
-            <div className="isolate grid grid-cols-7 gap-0 rounded-md border-b bg-gray-200 text-sm">
+            <div className="isolate grid grid-cols-7 gap-0 rounded-md border-b bg-transparent text-sm">
                 {allDaysInWeek}
             </div>
         );
@@ -123,7 +136,7 @@ const Calendar = () => {
         }
 
         return (
-            <div className="isolate grid grid-cols-7 gap-0 rounded-md border-b bg-gray-200 text-sm">
+            <div className="isolate grid grid-cols-7 gap-0 rounded-md  bg-transparent text-sm">
                 {/* <div className="isolate grid grid-cols-7 gap-px rounded-md bg-gray-200 text-sm shadow-sm ring-1 ring-gray-200"> */}
                 {allWeeks}
             </div>
@@ -131,7 +144,11 @@ const Calendar = () => {
     };
 
     return (
-        <>
+        <div
+            className={
+                actingOnDateRange ? 'shadow-lg scale-105 p-2' : 'border-b'
+            }
+        >
             <div className="mb-4 flex items-center justify-between text-center text-slate-800">
                 {/* Month year */}
                 <div className="ml-4 flex font-semibold text-slate-700">
@@ -207,7 +224,7 @@ const Calendar = () => {
 
             {/* Calendar dates element */}
             {isMonthlyView ? getDates() : getWeekDates()}
-        </>
+        </div>
     );
 };
 

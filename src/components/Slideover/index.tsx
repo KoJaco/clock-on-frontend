@@ -7,6 +7,8 @@ import {
     BsQuestionCircle,
     BsArrowsCollapse,
     BsArrowsExpand,
+    BsCalendarRange,
+    BsCollection,
     BsTag,
     BsImage,
 } from 'react-icons/bs';
@@ -29,6 +31,7 @@ import {
     CgChevronDown,
     CgTimer,
     CgCalendarDates,
+    CgCalendar,
 } from 'react-icons/cg';
 
 import {
@@ -42,6 +45,7 @@ import {
     MdOutlineLock,
     MdOutlineLockOpen,
     MdOutlineTimer,
+    MdDateRange,
 } from 'react-icons/md';
 
 // global store
@@ -56,6 +60,7 @@ import Editor from '../Editor';
 import { Auth, Hub } from 'aws-amplify';
 import AuthWrapper from '../wrappers/AuthWrapper';
 import Form from '../auth/Form';
+import { useApplicationStore } from '@/stores/ApplicationStore';
 
 type SlideoverProps = {
     placement?: 'left' | 'right';
@@ -89,6 +94,7 @@ const Slideover = ({
 
     // global state
     const { showSlideover, setShowSlideover } = useUIControlStore();
+    const { actingOnDateRange, setActingOnDateRange } = useApplicationStore();
 
     // other hooks
     useEffect(() => {
@@ -187,11 +193,18 @@ const Slideover = ({
                                     </div>
                                 </Transition.Child>
 
-                                <div className="border-1 flex h-full flex-1 flex-row border-r border-slate-300 bg-gradient-to-b from-[#fefefe] to-[#fefefe] shadow-md">
+                                <div
+                                    className={clsx(
+                                        'border-1 flex h-full flex-1 flex-row border-r border-transparent  shadow-md',
+                                        actingOnDateRange
+                                            ? 'bg-gray-600 bg-opacity-75'
+                                            : 'bg-gradient-to-b from-[#fefefe] to-[#fefefe]'
+                                    )}
+                                >
                                     {/* Narrow sidebar - Tabs */}
                                     <div
                                         className={clsx(
-                                            'border-1 h-screen border-r bg-gradient-to-b from-indigo-800 to-indigo-700',
+                                            'border-1 h-screen border-r border-transparent bg-gradient-to-b from-indigo-800 to-indigo-700',
                                             expandNarrowSidebar
                                                 ? 'w-24'
                                                 : 'w-16'
@@ -358,6 +371,40 @@ const Slideover = ({
                                                                             {showTimelineCalendar
                                                                                 ? 'Hide Calendar'
                                                                                 : 'Show Calendar'}
+                                                                        </button>
+                                                                    )}
+                                                                </Menu.Item>
+                                                                <Menu.Item>
+                                                                    {() => (
+                                                                        <button
+                                                                            className="group flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-slate-200"
+                                                                            onClick={() =>
+                                                                                setActingOnDateRange(
+                                                                                    !actingOnDateRange
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <CgCalendar
+                                                                                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                                aria-hidden="true"
+                                                                            />
+                                                                            Select
+                                                                            Date
+                                                                            Range
+                                                                        </button>
+                                                                    )}
+                                                                </Menu.Item>
+                                                            </div>
+                                                            <div className="py-1">
+                                                                <Menu.Item>
+                                                                    {() => (
+                                                                        <button className="group flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-slate-200">
+                                                                            <BsCollection
+                                                                                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                                aria-hidden="true"
+                                                                            />
+                                                                            Collapse
+                                                                            Timeline
                                                                         </button>
                                                                     )}
                                                                 </Menu.Item>
