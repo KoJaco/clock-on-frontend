@@ -1,21 +1,13 @@
-import { withAuthenticator } from '@aws-amplify/ui-react';
-
 import Head from 'next/head';
-import Image from 'next/image';
 import { Inter } from '@next/font/google';
 
 import UserProfile from '@/components/auth/UserProfile';
 import ColorCreateForm from '@/ui-components/ColorCreateForm';
+import Slideover from '@/components/Slideover';
 
 const inter = Inter({ subsets: ['latin'] });
 
-type Props = {
-    signOut: any;
-    user: any;
-    renderedAt: string;
-};
-
-function Home({ signOut, user, renderedAt }: Props) {
+function Home() {
     return (
         <>
             <Head>
@@ -30,12 +22,9 @@ function Home({ signOut, user, renderedAt }: Props) {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="h-auto">
-                <div className="h-screen">
-                    <div className="flex min-h-full">
-                        <UserProfile />
-                    </div>
-                </div>
+            <main className="min-h-screen">
+                <Slideover />
+                {/* <UserProfile /> */}
             </main>
         </>
     );

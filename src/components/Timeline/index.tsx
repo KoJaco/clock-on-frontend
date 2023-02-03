@@ -1,21 +1,59 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
 import { IoCreateOutline } from 'react-icons/io5';
 import { CgCalendarDates } from 'react-icons/cg';
 import { MdOutlineTimer } from 'react-icons/md';
+import {
+    eachHourOfInterval,
+    eachMinuteOfInterval,
+    addMinutes,
+    subDays,
+    differenceInDays,
+    startOfDay,
+    differenceInHours,
+} from 'date-fns';
 
 import Calendar from '../Calendar';
+import { useApplicationStore } from '@/stores/ApplicationStore';
 
 type TimelineProps = {
     showCalendar: boolean;
 };
 
 const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
+    // Local
     const container = useRef<HTMLDivElement>(null);
     const containerNav = useRef<HTMLDivElement>(null);
     const containerOffset = useRef<HTMLDivElement>(null);
+
+    // Global
+    const { timeInterval, activeDate, selectedDate, selectedDateRange } =
+        useApplicationStore();
+
+    // Memoized array of dates between start and end dates.
+    const times = useMemo(() => {
+        // initialise array of dates with start date
+        const times: Date[] = [selectedDateRange.start];
+        // how many hours between the start and end dates?
+
+        const minutesInHour = 60;
+
+        // multiply hourly intervals by our day range*hours in day
+        const intervals =
+            (minutesInHour / timeInterval) *
+            differenceInHours(
+                startOfDay(selectedDateRange.start),
+                selectedDateRange.end
+            );
+
+        for (let i = 1; i < intervals; i++) {
+            times.push(addMinutes(times[i - 1], timeInterval));
+        }
+
+        return times;
+    }, [timeInterval, selectedDateRange]);
 
     useEffect(() => {
         if (
@@ -37,36 +75,20 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
     return (
         <>
             {/* Start TaskBar */}
-            {/* <div className="mb-2 flex w-full items-center justify-between">
-                <button
-                    title="Toggle Calendar"
-                    className="flex items-center gap-x-2 text-slate-500 hover:text-slate-800"
-                    onClick={() => {}}
-                >
-                    <span className="text-sm">New Note</span>
-                    <IoCreateOutline className="h-5 w-5" />
-                </button>
-                <button
-                    title="Toggle Calendar"
-                    className="flex items-center gap-x-2 text-slate-500 hover:text-slate-800"
-                    onClick={() => {}}
-                >
-                    <span className="text-sm">Clock-On</span>
+            {!showCalendar && (
+                <div className="mb-2 -mt-8 flex w-full items-center justify-start font-semibold text-slate-700">
+                    {/* Access 'activeDate' from global state or cached with React Query */}
+                    {new Date().toLocaleDateString('en-Uk', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    })}
+                </div>
+            )}
 
-                    <MdOutlineTimer className="h-5 w-5" />
-                </button>
-                <button
-                    title="Toggle Calendar"
-                    className="flex items-center gap-x-2 text-slate-500 hover:text-slate-800"
-                    onClick={() => setShowCalendar(!showCalendar)}
-                >
-                    <span className="text-sm">Calendar</span>
-
-                    <CgCalendarDates className="h-5 w-5" />
-                </button>
-            </div> */}
             {/* End TaskBar */}
-            <div className="flex h-full flex-auto overflow-hidden rounded-md border border-slate-300 bg-white drop-shadow-md">
+            <div className="flex h-[95%] flex-auto overflow-hidden rounded-md border border-slate-300 bg-white drop-shadow-md">
                 <div
                     ref={container}
                     className="flex flex-auto flex-col overflow-y-auto overflow-x-hidden scrollbar-rounded"
@@ -82,18 +104,31 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
                         <div className="w-14 flex-none bg-white ring-1 ring-gray-100" />
                         <div className="grid flex-auto grid-cols-1 grid-rows-1">
                             {/* Horizontal lines */}
-                            <div
-                                className="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
-                                style={{
-                                    gridTemplateRows:
-                                        'repeat(48, minmax(3.5rem, 1fr))',
-                                }}
-                            >
+                            <div className="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 auto-rows-1fr">
                                 <div
                                     ref={containerOffset}
                                     className="row-end-1 h-7"
                                 ></div>
-                                <div>
+
+                                {times.map((time, index) => {
+                                    return (
+                                        <>
+                                            <div key={index}>
+                                                <div className="sticky left-0 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
+                                                    {time.toLocaleTimeString(
+                                                        'en-UK',
+                                                        {
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                        }
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div />
+                                        </>
+                                    );
+                                })}
+                                {/* <div>
                                     <div className="sticky left-0 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
                                         12AM
                                     </div>
@@ -236,7 +271,7 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
                                         11PM
                                     </div>
                                 </div>
-                                <div />
+                                <div /> */}
                             </div>
 
                             {/* Events */}

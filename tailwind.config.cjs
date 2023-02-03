@@ -9,6 +9,9 @@ module.exports = {
             virgil: ['Virgil', 'sans-serif'],
         },
         extend: {
+            gridAutoRows: {
+                '1fr': 'minmax(3rem, 1fr)',
+            },
             // extend typography plugin
             typography: ({ theme }) => ({
                 pink: {

@@ -14,7 +14,7 @@ export interface State {
 
 export const useUIControlStore = create<State>()((set) => ({
     // implement get from local storage too...
-    showSlideover: false,
+    showSlideover: true,
     setShowSlideover: (value) => {
         set(() => ({ showSlideover: value }));
     },
