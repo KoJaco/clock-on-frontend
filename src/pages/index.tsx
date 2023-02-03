@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Inter } from '@next/font/google';
 
 import UserProfile from '@/components/auth/UserProfile';
+import ColorCreateForm from '@/ui-components/ColorCreateForm';
 
 const inter = Inter({ subsets: ['latin'] });
 
