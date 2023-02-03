@@ -1,33 +1,34 @@
 enum ColorType {
-    BADGE
-    TAG
-    BACKGROUND
+  BADGE
+  TAG
+  BACKGROUND
 }
 
-type Color @model @auth(rules: [{ allow: public }]) {
-    id: ID!
-    type: ColorType
-    name: String!
-    value: String!
-    textDark: Boolean!
-    Tags: [Tag] @hasMany(indexName: "byColor", fields: ["id"])
+type Color @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  type: ColorType
+  name: String!
+  value: String!
+  textDark: Boolean!
+  Tags: [Tag] @hasMany(indexName: "byColor", fields: ["id"])
 }
 
-type Tag @model @auth(rules: [{ allow: public }]) {
-    id: ID!
-    notes: [Note] @manyToMany(relationName: "NoteTag")
-    text: String
-    createdAt: AWSDateTime!
-    updatedAt: AWSDateTime!
-    colorID: ID! @index(name: "byColor")
+type Tag @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  notes: [Note] @manyToMany(relationName: "NoteTag")
+  text: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  colorID: ID! @index(name: "byColor")
 }
 
-type Note @model @auth(rules: [{ allow: public }]) {
-    id: ID!
-    Tags: [Tag] @manyToMany(relationName: "NoteTag")
-    title: AWSJSON
-    content: AWSJSON
-    createdAt: AWSDateTime!
-    updatedAt: AWSDateTime!
-    revisedTime: AWSDateTime
+type Note @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Tags: [Tag] @manyToMany(relationName: "NoteTag")
+  title: AWSJSON
+  content: AWSJSON
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  revisedTime: AWSDateTime
 }
+ 

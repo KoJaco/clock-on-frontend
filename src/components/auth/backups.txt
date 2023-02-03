@@ -1,0 +1,28 @@
+// import React, { Dispatch, useCallback, useState } from 'react';
+// import { Auth } from 'aws-amplify';
+// import SignIn from './SignIn';
+// import SignUp from './SignUp';
+// import ConfirmSignUp from './ConfirmSignUp';
+// import ForgotPassword from './ForgotPassword';
+// import ForgotPasswordSubmit from './ForgotPasswordSubmit';
+// import { AmplifyUser } from '@aws-amplify/ui';
+
+// const LoginForm = () => {
+//     const [user, setUser] = useState<AmplifyUser | null>(null);
+//     const [errors, setErrors] = useState<Array<Error>>([]);
+//     const [isLoading, setIsLoading] = useState(false);
+
+//     const signUpUser = useCallback(() => {
+//         async () =>
+//             await Do.try(async () => {
+//                 setErrors([]);
+//             })
+//                 .catch(() => {})
+//                 .finally(() => setIsLoading(false))
+//                 .getAwaiter();
+//     }, [user]);
+
+//     return <div>LoginForm</div>;
+// };
+
+// export default LoginForm;

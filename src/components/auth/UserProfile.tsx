@@ -45,16 +45,18 @@ const UserProfile = () => {
             </AuthWrapper>
         );
 
+    console.log(user);
+
     return (
         <AuthWrapper>
-            <>
+            <div className="space-y-2">
                 <h1>Profile</h1>
-                <h2>
-                    {'Username (id):'} {user?.username}
-                </h2>
+                <h2>Sub: {user?.sub}</h2>
                 <h2>Email: {user?.email}</h2>
+                <h2>Email verified: {user?.email_verified ? 'Yes' : 'No'}</h2>
+
                 <button onClick={signOut}>Sign Out</button>
-            </>
+            </div>
         </AuthWrapper>
     );
 };

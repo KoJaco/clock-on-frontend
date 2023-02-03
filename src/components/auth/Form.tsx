@@ -5,7 +5,9 @@ import SignUp from './SignUp';
 import ConfirmSignUp from './ConfirmSignUp';
 import ForgotPassword from './ForgotPassword';
 import ForgotPasswordSubmit from './ForgotPasswordSubmit';
+import { AmplifyUser } from '@aws-amplify/ui';
 
+// username is email in this case
 type FormState = {
     username?: string;
     password?: string;
@@ -25,6 +27,20 @@ type FormProps = {
     setUser: Dispatch<any>;
 };
 
+type UniqueIdentifier = string | number;
+
+export interface FormErrorRecords {
+    [key: UniqueIdentifier]: { errors: Error[] | null };
+}
+
+const initialFormErrors: FormErrorRecords = {
+    signIn: { errors: null },
+    signUp: { errors: null },
+    confirmSignUp: { errors: null },
+    forgotPassword: { errors: null },
+    forgotPasswordSubmit: { errors: null },
+};
+
 const initialFormState = {
     username: '',
     password: '',
@@ -38,16 +54,31 @@ async function signUp(
 ) {
     if (username && password && email) {
         try {
-            await Auth.signUp({
+            const { user } = await Auth.signUp({
                 username,
                 password,
                 attributes: { email },
+                autoSignIn: {
+                    enabled: true,
+                },
             });
-
             console.log('sign up success');
+            console.log(user);
             updateFormType('confirmSignUp');
-        } catch (err) {
-            console.log('error signing up: ', err);
+        } catch (err: any) {
+            let message: string;
+            switch (err) {
+                case 'InvalidParameterException':
+                    message = 'Username should be an email';
+                    break;
+                case 'UsernameExistsException':
+                    message = 'Username already exists';
+                    break;
+                default:
+                    message = 'Something went wrong';
+            }
+
+            console.log('error signing up: ', message);
         }
     }
 }
@@ -113,6 +144,8 @@ async function forgotPasswordSubmit(
 const Form = (props: FormProps) => {
     const [formType, setFormType] = useState('signIn');
     const [formState, setFormState] = useState(initialFormState);
+    const [formErrors, setFormErrors] =
+        useState<typeof initialFormErrors>(initialFormErrors);
 
     function updateForm(event: React.ChangeEvent<HTMLInputElement>) {
         setFormState({
@@ -128,11 +161,15 @@ const Form = (props: FormProps) => {
                     <SignUp
                         signUp={() => signUp(formState, setFormType)}
                         updateFormState={(e) => updateForm(e)}
+                        updateFormType={(e) =>
+                            setFormType(e.currentTarget.name)
+                        }
                     />
                 );
             case 'confirmSignUp':
                 return (
                     <ConfirmSignUp
+                        emailAsUsername={formState.username}
                         confirmSignUp={() =>
                             confirmSignUp(formState, setFormType)
                         }
@@ -142,6 +179,7 @@ const Form = (props: FormProps) => {
             case 'signIn':
                 return (
                     <SignIn
+                        errors={formErrors}
                         signIn={() => signIn(formState, props.setUser)}
                         updateFormState={(e) => updateForm(e)}
                         updateFormType={(e) =>
@@ -156,6 +194,9 @@ const Form = (props: FormProps) => {
                             forgotPassword(formState, setFormType)
                         }
                         updateFormState={(e) => updateForm(e)}
+                        updateFormType={(e) =>
+                            setFormType(e.currentTarget.name)
+                        }
                     />
                 );
             case 'forgotPasswordSubmit':
