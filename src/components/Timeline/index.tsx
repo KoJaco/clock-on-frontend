@@ -111,9 +111,12 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
                     <div
                         ref={containerNav}
                         className="sticky top-0 z-10 bg-white"
-                        // className="sticky top-0 z-10 grid flex-none grid-cols-7 bg-white text-xs text-gray-500 shadow ring-1 ring-black ring-opacity-5"
                     >
-                        {showCalendar && <Calendar />}
+                        {/* Start Calendar */}
+
+                        {(showCalendar || actingOnDateRange) && <Calendar />}
+
+                        {/* End Calendar */}
                     </div>
                     {!actingOnDateRange && (
                         <div className="flex w-full flex-auto">
@@ -128,8 +131,8 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
 
                                     {times.map((time, index) => {
                                         return (
-                                            <>
-                                                <div key={index}>
+                                            <Fragment key={index}>
+                                                <div>
                                                     <div className="sticky left-0 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
                                                         {time.toLocaleTimeString(
                                                             'en-UK',
@@ -141,7 +144,7 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
                                                     </div>
                                                 </div>
                                                 <div />
-                                            </>
+                                            </Fragment>
                                         );
                                     })}
                                 </div>

@@ -325,7 +325,12 @@ const Slideover = ({
                                                 </div>
                                                 {/* Start Menu Dropdown */}
                                                 <div className="ml-auto flex">
-                                                    <BaseDropdown labelTitle="Menu">
+                                                    <BaseDropdown
+                                                        labelTitle="Menu"
+                                                        disabled={
+                                                            actingOnDateRange
+                                                        }
+                                                    >
                                                         <>
                                                             <div className="py-1">
                                                                 <Menu.Item>

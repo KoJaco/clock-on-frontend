@@ -6,6 +6,7 @@ import { CgChevronDown } from 'react-icons/cg';
 import clsx from 'clsx';
 import { IoCalendarOutline } from 'react-icons/io5';
 type BaseDropDownProps = {
+    disabled?: boolean;
     minimalLabel?: boolean;
     labelTitle?: string;
     children?: JSX.Element;
@@ -14,6 +15,7 @@ type BaseDropDownProps = {
 };
 
 const BaseDropdown = ({
+    disabled = false,
     labelTitle = 'Options',
     minimalLabel = false,
     children,
@@ -27,8 +29,9 @@ const BaseDropdown = ({
                         className={
                             props.menuButtonStyling
                                 ? props.menuButtonStyling
-                                : 'inline-flex w-full justify-center rounded-full text-sm font-medium text-slate-700 focus:outline-none'
+                                : 'inline-flex w-full justify-center rounded-full text-sm font-medium text-slate-700 focus:outline-none disabled:opacity-50'
                         }
+                        disabled={disabled}
                     >
                         <BiDotsVerticalRounded
                             className="h-5 w-5"
@@ -42,8 +45,9 @@ const BaseDropdown = ({
                         className={
                             props.menuButtonStyling
                                 ? props.menuButtonStyling
-                                : 'inline-flex w-full justify-center rounded-full px-2 text-sm font-medium text-slate-700  focus:outline-none'
+                                : 'inline-flex w-full justify-center rounded-full px-2 text-sm font-medium text-slate-700 focus:outline-none disabled:opacity-50'
                         }
+                        disabled={disabled}
                     >
                         {labelTitle}
                         <CgChevronDown
