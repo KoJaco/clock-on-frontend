@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from 'react';
+import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -6,6 +6,9 @@ import ConfirmSignUp from './ConfirmSignUp';
 import ForgotPassword from './ForgotPassword';
 import ForgotPasswordSubmit from './ForgotPasswordSubmit';
 import { AmplifyUser } from '@aws-amplify/ui';
+import { FormErrorRecords } from '@/core/types/auth';
+
+import { useAuthStore } from '@/stores/AuthStore';
 
 // username is email in this case
 type FormState = {
@@ -26,12 +29,6 @@ type FormProps = {
     // state setter
     setUser: Dispatch<any>;
 };
-
-type UniqueIdentifier = string | number;
-
-export interface FormErrorRecords {
-    [key: UniqueIdentifier]: { errors: Error[] | null };
-}
 
 const initialFormErrors: FormErrorRecords = {
     signIn: { errors: null },
@@ -83,6 +80,7 @@ async function signUp(
     }
 }
 
+// confirms sign up and updates form type to sign in, i.e. redirects user to sign in form.
 async function confirmSignUp(
     { username, confirmationCode }: FormState,
     updateFormType: (value: FormType) => void
@@ -92,22 +90,25 @@ async function confirmSignUp(
             await Auth.confirmSignUp(username, confirmationCode);
             updateFormType('signIn');
         } catch (err) {
-            console.log('error confirming sign up: ', err);
+            console.warn('error confirming sign up: ', err);
         }
     }
 }
+// Signs the user in and sets the current user.
 
 async function signIn(
     { email, password }: FormState,
-    setUser: (value: any) => void
+    setUser: (value: any) => void,
+    setSignInError: (value: Error) => void
 ) {
     if (email && password) {
         try {
             const user = await Auth.signIn(email, password);
             const userInfo = { email: user.email, ...user.attributes };
             setUser(userInfo);
-        } catch (err) {
-            console.log('error signing in: ', err);
+        } catch (err: any) {
+            console.warn('error signing in: ', err);
+            setSignInError(err);
         }
     }
 }
@@ -121,7 +122,7 @@ async function forgotPassword(
             await Auth.forgotPassword(email);
             updateFormType('forgotPasswordSubmit');
         } catch (err) {
-            console.log('error submitting forgot password: ', err);
+            console.warn('error submitting forgot password: ', err);
         }
     }
 }
@@ -136,7 +137,7 @@ async function forgotPasswordSubmit(
 
             updateFormType('signIn');
         } catch (err) {
-            console.log('error submitting forgot password submit: ', err);
+            console.warn('error submitting forgot password submit: ', err);
         }
     }
 }
@@ -144,8 +145,8 @@ async function forgotPasswordSubmit(
 const Form = (props: FormProps) => {
     const [formType, setFormType] = useState('signIn');
     const [formState, setFormState] = useState(initialFormState);
-    const [formErrors, setFormErrors] =
-        useState<typeof initialFormErrors>(initialFormErrors);
+
+    const { setSignInError, resetErrors } = useAuthStore();
 
     function updateForm(event: React.ChangeEvent<HTMLInputElement>) {
         setFormState({
@@ -153,6 +154,11 @@ const Form = (props: FormProps) => {
             [event.currentTarget.name]: event.currentTarget.value,
         });
     }
+
+    useEffect(() => {
+        // when formType changes, i.e. our form changes, reset all errors in global state
+        resetErrors();
+    }, [formType, resetErrors]);
 
     function renderForm() {
         switch (formType) {
@@ -179,8 +185,9 @@ const Form = (props: FormProps) => {
             case 'signIn':
                 return (
                     <SignIn
-                        errors={formErrors}
-                        signIn={() => signIn(formState, props.setUser)}
+                        signIn={() =>
+                            signIn(formState, props.setUser, setSignInError)
+                        }
                         updateFormState={(e) => updateForm(e)}
                         updateFormType={(e) =>
                             setFormType(e.currentTarget.name)
@@ -213,33 +220,7 @@ const Form = (props: FormProps) => {
         }
     }
 
-    return (
-        <div>
-            {renderForm()}
-            {/* {formType === 'signUp' && (
-                <p>
-                    Already have an account?{' '}
-                    <span onClick={() => setFormType('signIn')}>Sign In</span>
-                </p>
-            )}
-            {formType === 'signIn' && (
-                <>
-                    <p>
-                        Need an account?{' '}
-                        <button onClick={() => setFormType('signUp')}>
-                            Sign Up
-                        </button>
-                    </p>
-                    <p>
-                        Forget your password?{' '}
-                        <button onClick={() => setFormType('forgotPassword')}>
-                            Reset Password
-                        </button>
-                    </p>
-                </>
-            )} */}
-        </div>
-    );
+    return <div>{renderForm()}</div>;
 };
 
 export default Form;

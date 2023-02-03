@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
-
 import { BsFacebook, BsApple, BsGoogle } from 'react-icons/bs';
 
+import { useAuthStore } from '@/stores/AuthStore';
+
 type SignInProps = {
-    errors: Error[];
     signIn: () => void;
     updateFormState: (e: React.ChangeEvent<HTMLInputElement>) => void;
     updateFormType: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -16,6 +15,8 @@ const SignIn = ({
     updateFormType,
     ...props
 }: SignInProps) => {
+    const { signInError } = useAuthStore();
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         signIn();
@@ -147,6 +148,12 @@ const SignIn = ({
                                 />
                             </div>
                         </div>
+
+                        {signInError && (
+                            <span className="text-red-500 text-sm">
+                                {signInError.message}
+                            </span>
+                        )}
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
