@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useRef, useState } from 'react';
+import React, {
+    Fragment,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import {
     format,
     startOfWeek,
@@ -12,7 +18,8 @@ import {
     addMonths,
     subWeeks,
     addWeeks,
-    isSameWeek,
+    isBefore,
+    isAfter,
     subDays,
 } from 'date-fns';
 
@@ -31,7 +38,7 @@ import Cell from './Cell';
 import { useApplicationStore } from '@/stores/ApplicationStore';
 import { useOnClickOutside, useIsHovering } from '@/core/hooks';
 
-const daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 type CalendarDaysProps = {
     timePeriod: 'month' | 'week';
@@ -55,16 +62,171 @@ const Calendar = () => {
         start: Date | null;
         end: Date | null;
     }>({
-        start: null,
-        end: null,
+        start: selectedDateRange.start,
+        end: selectedDateRange.end,
     });
 
     // clickoutside ref
     const calendarRef = useRef<HTMLDivElement>(null);
 
     useOnClickOutside(calendarRef, () => {
-        setActingOnDateRange(false);
+        handleCloseRangeSelection();
     });
+
+    function setDateRangesToDefault() {
+        const startD: Date = new Date();
+        const endD: Date = subDays(new Date(), 1);
+
+        setSelectedDateRange({
+            start: startD,
+            end: endD,
+        });
+        setLocalDateRange({
+            start: startD,
+            end: endD,
+        });
+    }
+
+    function handleCloseRangeSelection() {
+        setActingOnDateRange(false);
+        setDateRangesToDefault();
+    }
+
+    function handleSubmitSelection() {
+        // Do something, async fetch fetch data.
+        setActingOnDateRange(false);
+    }
+
+    const handleSetLocalDateRange = useCallback(
+        (selectedDate: Date) => {
+            // If we have a start but no end, set the end
+            if (localDateRange.start && !localDateRange.end) {
+                console.log('Hit No end');
+                setLocalDateRange({
+                    ...localDateRange,
+                    end: selectedDate,
+                });
+                // if we do not have a start, set the start
+            } else if (!localDateRange.start) {
+                console.log('Hit No start');
+                setLocalDateRange({
+                    ...localDateRange,
+                    start: selectedDate,
+                });
+                // If we have both and selected date is before, set a new start date
+            } else if (
+                localDateRange.start &&
+                localDateRange.end &&
+                isBefore(selectedDate, localDateRange.start)
+            ) {
+                // if our end date is before our start, swap them round.
+                setLocalDateRange({
+                    ...localDateRange,
+                    start: selectedDate,
+                });
+                // if we have both and we're selected a day after the end, just set a new end.
+            } else {
+                setLocalDateRange({
+                    ...localDateRange,
+                    end: selectedDate,
+                });
+            }
+        },
+        [setLocalDateRange, localDateRange]
+    );
+
+    const generateDatesForCurrentWeekWithRange = useCallback(
+        (
+            date: Date,
+            start: Date | null,
+            end: Date | null,
+            activeDate: Date
+        ) => {
+            let currentDate = date;
+            const week: JSX.Element[] = [];
+
+            for (let day = 0; day < 7; day++) {
+                const cloneDate = currentDate;
+                let isInRange: boolean | null;
+                const isBeforeEnd = end && isBefore(cloneDate, end);
+                const isAfterStart = start && isAfter(cloneDate, start);
+
+                isInRange = isBeforeEnd && isAfterStart;
+
+                week.push(
+                    <button
+                        key={cloneDate.toLocaleDateString()}
+                        className={clsx(
+                            'py-1 focus:z-10 bg-white',
+                            !isInRange && 'hover:bg-gray-100',
+                            // if we're in the range...
+                            isInRange && 'bg-indigo-100 text-gray-400',
+                            // If our current date and active date are the same month, we want the background to be white/dark (not seemingly blanked out)
+                            isSameMonth(currentDate, activeDate)
+                                ? 'bg-white'
+                                : 'bg-slate-50 py-1.5 text-gray-400',
+                            // If our current date is our start or end date, highlight the text white and make bold.
+                            start &&
+                                isSameDay(currentDate, start) &&
+                                'bg-indigo-100 text-white font-semibold',
+                            (start && isSameDay(currentDate, start)) ||
+                                (end &&
+                                    isSameDay(currentDate, end) &&
+                                    'font-semibold text-white bg-indigo-100'),
+                            // Same situation if our start or end is today
+                            ((start && isSameDay(currentDate, start)) ||
+                                (end && isSameDay(currentDate, end))) &&
+                                isSameDay(currentDate, new Date()) &&
+                                'text-white bg-indigo-100',
+                            //  we want today to be coloured primary and semi-bold, even if it is not selected in the range.
+
+                            isSameDay(currentDate, new Date()) &&
+                                start &&
+                                !isSameDay(currentDate, start) &&
+                                end &&
+                                !isSameDay(currentDate, end) &&
+                                'font-semibold text-indigo-600'
+                        )}
+                        onClick={() => {
+                            handleSetLocalDateRange(cloneDate);
+                        }}
+                    >
+                        <time
+                            dateTime={currentDate.toLocaleDateString()}
+                            className={clsx(
+                                'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
+                                // If our start date is today, we want to highlight background with primary colour
+                                start &&
+                                    isSameDay(currentDate, start) &&
+                                    isSameDay(currentDate, new Date()) &&
+                                    'bg-indigo-600',
+                                // If our end date is today, we want to do the same
+                                end &&
+                                    isSameDay(currentDate, end) &&
+                                    isSameDay(currentDate, new Date()) &&
+                                    'bg-indigo-600',
+                                // if it is not today, we want to highlight the background with gray
+                                start &&
+                                    isSameDay(currentDate, start) &&
+                                    !isSameDay(currentDate, new Date()) &&
+                                    'bg-gray-900',
+
+                                end &&
+                                    isSameDay(currentDate, end) &&
+                                    !isSameDay(currentDate, new Date()) &&
+                                    'bg-gray-900'
+                            )}
+                        >
+                            {format(currentDate, 'd')}
+                        </time>
+                    </button>
+                );
+                currentDate = addDays(currentDate, 1);
+            }
+            return <Fragment key={date.toLocaleDateString()}>{week}</Fragment>;
+        },
+        [handleSetLocalDateRange]
+    );
 
     const generateDatesForCurrentWeek = useCallback(
         (date: Date, selectedDate: Date, activeDate: Date) => {
@@ -135,27 +297,48 @@ const Calendar = () => {
     }, [activeDate, selectedDate, generateDatesForCurrentWeek]);
 
     const getDates = useCallback(() => {
-        // Functionality for date range selection
-
-        // Functionality for single date selection
-        const startOfTheSelectedMonth = startOfMonth(activeDate);
-        const endOfTheSelectedMonth = endOfMonth(activeDate);
-        const startDate = startOfWeek(startOfTheSelectedMonth);
-        const endDate = endOfWeek(endOfTheSelectedMonth);
-
-        let currentDate = startDate;
-
         const allWeeks: JSX.Element[] = [];
 
-        while (currentDate <= endDate) {
-            allWeeks.push(
-                generateDatesForCurrentWeek(
-                    currentDate,
-                    selectedDate,
-                    activeDate
-                )
-            );
-            currentDate = addDays(currentDate, 7);
+        if (actingOnDateRange) {
+            // Functionality for date range selection
+            const startOfTheSelectedMonth = startOfMonth(activeDate);
+            const endOfTheSelectedMonth = endOfMonth(activeDate);
+            const startDateOfWeek = startOfWeek(startOfTheSelectedMonth);
+            const endDateOfWeek = endOfWeek(endOfTheSelectedMonth);
+            const { start, end } = localDateRange;
+
+            let currentDate = startDateOfWeek;
+
+            while (currentDate <= endDateOfWeek) {
+                allWeeks.push(
+                    generateDatesForCurrentWeekWithRange(
+                        currentDate,
+                        start,
+                        end,
+                        activeDate
+                    )
+                );
+                currentDate = addDays(currentDate, 7);
+            }
+        } else {
+            // Functionality for single date selection
+            const startOfTheSelectedMonth = startOfMonth(activeDate);
+            const endOfTheSelectedMonth = endOfMonth(activeDate);
+            const startDate = startOfWeek(startOfTheSelectedMonth);
+            const endDate = endOfWeek(endOfTheSelectedMonth);
+
+            let currentDate = startDate;
+
+            while (currentDate <= endDate) {
+                allWeeks.push(
+                    generateDatesForCurrentWeek(
+                        currentDate,
+                        selectedDate,
+                        activeDate
+                    )
+                );
+                currentDate = addDays(currentDate, 7);
+            }
         }
 
         return (
@@ -164,7 +347,14 @@ const Calendar = () => {
                 {allWeeks}
             </div>
         );
-    }, [activeDate, selectedDate, generateDatesForCurrentWeek]);
+    }, [
+        activeDate,
+        selectedDate,
+        generateDatesForCurrentWeek,
+        actingOnDateRange,
+        localDateRange,
+        generateDatesForCurrentWeekWithRange,
+    ]);
 
     return (
         <div
@@ -230,11 +420,22 @@ const Calendar = () => {
                             <button
                                 title="cancel"
                                 className=""
-                                onClick={() => setActingOnDateRange(false)}
+                                onClick={() => {
+                                    handleCloseRangeSelection();
+                                }}
                             >
                                 <MdOutlineClose className="w-4 h-4" />
                             </button>
-                            <button title="Reset Selection" className="">
+                            <button
+                                title="Reset Selection"
+                                className=""
+                                onClick={() => {
+                                    setLocalDateRange({
+                                        start: null,
+                                        end: null,
+                                    });
+                                }}
+                            >
                                 {/* <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="16"
@@ -252,6 +453,7 @@ const Calendar = () => {
                             <button
                                 title="Submit Selection"
                                 className="rounded-full bg-emerald-500  text-white"
+                                onClick={() => handleSubmitSelection()}
                             >
                                 <MdCheckCircle className="w-4 h-4" />
                             </button>

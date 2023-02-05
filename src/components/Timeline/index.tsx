@@ -39,23 +39,38 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
 
     // Memoized array of dates between start and end dates.
     const times = useMemo(() => {
-        // initialise array of dates with start date
-        const times: Date[] = [selectedDateRange.start];
-        // how many hours between the start and end dates?
-
+        let times: Date[] = [];
         const minutesInHour = 60;
 
-        // multiply hourly intervals by our day range*hours in day
-        const intervals =
-            (minutesInHour / timeInterval) *
-            differenceInHours(
-                startOfDay(selectedDateRange.start),
-                selectedDateRange.end
-            );
+        let intervals: number;
+
+        if (selectedDateRange.start && selectedDateRange.end) {
+            // initialise array of dates with start date
+            times = [selectedDateRange.start];
+
+            // multiply hourly intervals by our day range*hours in day
+            intervals =
+                (minutesInHour / timeInterval) *
+                differenceInHours(
+                    startOfDay(selectedDateRange.start),
+                    selectedDateRange.end
+                );
+        } else {
+            // If no date range is selected, give default for times
+            times = [new Date()];
+
+            intervals =
+                (minutesInHour / timeInterval) *
+                differenceInHours(
+                    startOfDay(new Date()),
+                    subDays(new Date(), 2)
+                );
+        }
 
         for (let i = 1; i < intervals; i++) {
             times.push(addMinutes(times[i - 1], timeInterval));
         }
+        // how many hours between the start and end dates?
 
         return times;
     }, [timeInterval, selectedDateRange]);
@@ -83,7 +98,7 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
             {!showCalendar && (
                 <div className="mb-2 -mt-8 flex w-full items-center justify-start font-semibold text-slate-700">
                     {/* Access 'activeDate' from global state or cached with React Query */}
-                    {new Date().toLocaleDateString('en-Uk', {
+                    {selectedDate.toLocaleDateString('en-AU', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'short',

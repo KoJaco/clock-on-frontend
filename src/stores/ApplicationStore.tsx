@@ -16,8 +16,11 @@ export interface State {
     setActingOnDateRange: (value: boolean) => void;
     selectedDate: Date;
     setSelectedDate: (date: Date) => void;
-    selectedDateRange: { start: Date; end: Date };
-    setSelectedDateRange: (dateRange: { start: Date; end: Date }) => void;
+    selectedDateRange: { start: Date | null; end: Date | null };
+    setSelectedDateRange: (dateRange: {
+        start: Date | null;
+        end: Date | null;
+    }) => void;
 }
 
 export const useApplicationStore = create<State>()((set) => ({
@@ -32,7 +35,9 @@ export const useApplicationStore = create<State>()((set) => ({
     selectedDate: new Date(),
     setSelectedDate: (date: Date) => set({ selectedDate: date }),
     // initialise to today (start) and 2 days ago (end)
-    selectedDateRange: { start: new Date(), end: subDays(new Date(), 2) },
-    setSelectedDateRange: (dateRange: { start: Date; end: Date }) =>
-        set({ selectedDateRange: dateRange }),
+    selectedDateRange: { start: new Date(), end: subDays(new Date(), 1) },
+    setSelectedDateRange: (dateRange: {
+        start: Date | null;
+        end: Date | null;
+    }) => set({ selectedDateRange: dateRange }),
 }));
