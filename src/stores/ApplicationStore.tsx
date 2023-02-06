@@ -9,6 +9,7 @@ import { create } from 'zustand';
 export interface State {
     breadcrumbs: { id: string; title: string; uniquePath: string }[];
     timeInterval: 15 | 30 | 45 | 60;
+    setTimeInterval: (value: 15 | 30 | 45 | 60) => void;
     activeDate: Date;
     setActiveDate: (date: Date) => void;
     // used in Timeline, Slideover, and Calendar components
@@ -28,6 +29,7 @@ export const useApplicationStore = create<State>()((set) => ({
     // Breadcrumbs for tracking folders
     breadcrumbs: [],
     timeInterval: 30,
+    setTimeInterval: (value: 15 | 30 | 45 | 60) => set({ timeInterval: value }),
     activeDate: new Date(),
     actingOnDateRange: false,
     setActingOnDateRange: (value: boolean) => set({ actingOnDateRange: value }),

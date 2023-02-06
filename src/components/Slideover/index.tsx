@@ -78,7 +78,7 @@ const sidebarTabs = [
     { name: 'Settings', icon: IoSettingsOutline },
 ];
 
-const timeIntervals = [15, 30, 45, 60];
+const timeIntervals: Array<15 | 30 | 45 | 60> = [15, 30, 45, 60];
 
 const mockBreadcrumbs = ['work', 'clients', 'c-linx'];
 
@@ -98,7 +98,12 @@ const Slideover = ({
 
     // global state
     const { showSlideover, setShowSlideover } = useUIControlStore();
-    const { actingOnDateRange, setActingOnDateRange } = useApplicationStore();
+    const {
+        actingOnDateRange,
+        setActingOnDateRange,
+        timeInterval,
+        setTimeInterval,
+    } = useApplicationStore();
 
     // other hooks
     useEffect(() => {
@@ -417,7 +422,7 @@ const Slideover = ({
                                                                 </Menu.Item>
                                                                 <Menu.Item>
                                                                     {() => (
-                                                                        <div className="group flex flex-col justify-start w-full px-4 py-2 text-sm text-gray-700 gap-y-2 hover:bg-slate-200">
+                                                                        <div className="group flex flex-col justify-start w-full px-4 py-2 text-sm text-gray-700 gap-y-1 hover:bg-slate-200">
                                                                             <div className="flex">
                                                                                 <MdTimeline
                                                                                     className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
@@ -432,15 +437,25 @@ const Slideover = ({
                                                                                 </label>
                                                                             </div>
 
-                                                                            {/* <div className="flex justify-between">
+                                                                            <div className="hidden  group-hover:flex justify-between">
                                                                                 {timeIntervals.map(
                                                                                     (
                                                                                         n
                                                                                     ) => (
                                                                                         <button
-                                                                                            className="rounded-md p-1 "
+                                                                                            className={clsx(
+                                                                                                'rounded-full py-1 px-2 hover:bg-indigo-700 hover:text-white hover:font-semibold',
+                                                                                                n ===
+                                                                                                    timeInterval &&
+                                                                                                    'bg-indigo-700 text-white font-semibold'
+                                                                                            )}
                                                                                             key={
                                                                                                 n
+                                                                                            }
+                                                                                            onClick={() =>
+                                                                                                setTimeInterval(
+                                                                                                    n
+                                                                                                )
                                                                                             }
                                                                                         >
                                                                                             {
@@ -449,7 +464,7 @@ const Slideover = ({
                                                                                         </button>
                                                                                     )
                                                                                 )}
-                                                                            </div> */}
+                                                                            </div>
                                                                         </div>
                                                                     )}
                                                                 </Menu.Item>
