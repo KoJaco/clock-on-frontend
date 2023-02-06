@@ -3,22 +3,20 @@ import { useTheme } from 'next-themes';
 
 type TagProps = {
     text: string;
-    backgroundColor: { name: string; value: string; textDark: boolean };
+    colorIsBackground?: boolean;
+    color: { name: string; value: string; textDark: boolean };
 };
 
-const Tag = (props: TagProps) => {
+const Tag = ({ colorIsBackground = true, ...props }: TagProps) => {
     const { theme } = useTheme();
 
     const textColorStyle = () => {
-        if (props.backgroundColor.name === 'transparent' && theme === 'light') {
+        if (props.color.name === 'transparent' && theme === 'light') {
             return 'rgba(0,0,0,1)';
-        } else if (
-            props.backgroundColor.name === 'transparent' &&
-            theme === 'dark'
-        ) {
+        } else if (props.color.name === 'transparent' && theme === 'dark') {
             return 'rgba(255,255,255,1)';
         }
-        if (props.backgroundColor.textDark) {
+        if (props.color.textDark) {
             return 'black';
         } else {
             return '#fff';
@@ -30,11 +28,11 @@ const Tag = (props: TagProps) => {
             {props.text.length > 0 && (
                 <div
                     className={`flex items-center rounded-full ${
-                        props.backgroundColor.name === 'transparent' &&
+                        props.color.name === 'transparent' &&
                         'border-1 border-slate-500/50'
                     }`}
                     style={{
-                        backgroundColor: props.backgroundColor.value,
+                        backgroundColor: props.color.value,
                     }}
                 >
                     <span

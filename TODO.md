@@ -1,4 +1,5 @@
 -   1. Refactor code, needs to be neater, comments added, etc... should folders be included?
+    -   This includes adding light and dark theme. Should get on top of this before continuing with build.
 -   2. Build out application logic store, using state variables to determine styling/what to display.
     -   Tabs should be rendered nicely, maybe use headless ui for displaying flow in.
 -   3. Build out menus for each tab, menu content should change based on tab.

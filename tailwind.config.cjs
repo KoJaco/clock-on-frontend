@@ -2,7 +2,10 @@
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
+    mode: 'jit',
     content: ['./src/**/*.{js,ts,jsx,tsx}'],
+    darkMode: 'class',
+
     theme: {
         fontFamily: {
             // add custom font from excalidraw, credit to Ellinor Rapp | https://github.com/excalidraw/virgil

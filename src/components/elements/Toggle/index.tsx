@@ -3,14 +3,14 @@ import { Switch } from '@headlessui/react';
 import clsx from 'clsx';
 
 type ToggleProps = {
-    icon?: React.ReactNode;
+    iconOff?: React.ReactNode;
+    iconOn?: React.ReactNode;
     label?: string;
     enabled: boolean;
     setEnabled: (value: boolean) => void;
 };
 
 const Toggle = ({
-    icon,
     label = 'Toggle Setting',
     enabled = false,
     setEnabled,
