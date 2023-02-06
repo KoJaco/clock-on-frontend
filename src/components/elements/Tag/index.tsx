@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useTheme } from 'next-themes';
 
 type TagProps = {
     text: string;
+    key?: string | number;
     colorIsBackground?: boolean;
+    displayOnly?: boolean;
     color: { name: string; value: string; textDark: boolean };
+    callBack?: () => void;
 };
 
-const Tag = ({ colorIsBackground = true, ...props }: TagProps) => {
+const Tag = ({
+    colorIsBackground = true,
+    displayOnly = true,
+    callBack,
+    ...props
+}: TagProps) => {
     const { theme } = useTheme();
 
     const textColorStyle = () => {
@@ -23,29 +31,49 @@ const Tag = ({ colorIsBackground = true, ...props }: TagProps) => {
         }
     };
 
+    if (props.text.length > 0) return null;
+
     return (
-        <>
-            {props.text.length > 0 && (
-                <div
-                    className={`flex items-center rounded-full ${
+        <Fragment key={props.key ? props.key : props.text}>
+            {/* coloured in tag */}
+            {colorIsBackground ? (
+                <button
+                    title={`${
+                        displayOnly ? props.text : 'Select tag ' + props.text
+                    }`}
+                    className={`flex items-center rounded-full text-sm md:text-md font-medium px-2 ${
                         props.color.name === 'transparent' &&
                         'border-1 border-slate-500/50'
                     }`}
                     style={{
+                        color: textColorStyle(),
                         backgroundColor: props.color.value,
                     }}
+                    disabled={displayOnly}
+                    onClick={() => callBack && callBack()}
                 >
-                    <span
-                        className="text-sm md:text-md font-medium px-2"
-                        style={{
-                            color: textColorStyle(),
-                        }}
-                    >
+                    {props.text}
+                </button>
+            ) : (
+                // Tag with little coloured dot
+                <button
+                    className="relative inline-flex items-center rounded-full border border-gray-300 px-3 py-0.5 text-sm"
+                    disabled={displayOnly}
+                    onClick={() => callBack && callBack()}
+                >
+                    <span className="absolute flex flex-shrink-0 items-center justify-center">
+                        <span
+                            className="h-1.5 w-1.5 rounded-full"
+                            style={{ backgroundColor: props.color.value }}
+                            aria-hidden="true"
+                        />
+                    </span>
+                    <span className="ml-3.5 font-medium text-slate-700">
                         {props.text}
                     </span>
-                </div>
+                </button>
             )}
-        </>
+        </Fragment>
     );
 };
 
