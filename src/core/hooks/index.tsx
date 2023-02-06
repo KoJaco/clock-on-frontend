@@ -1,5 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { assertIsNode } from '../utils';
+import {
+    useEffect,
+    useState,
+    useRef,
+    useCallback,
+    DependencyList,
+    useLayoutEffect,
+} from 'react';
+import { assertIsNode, getScrollPosition, isBrowser } from '../utils';
+import type { ElementRef, ScrollProps } from '../types/hooks';
 
 // https://medium.com/@Chris1993/15-useful-custom-react-hooks-for-your-next-web-app-c5902d868f4c
 
@@ -236,5 +244,69 @@ export function useKeyPress(targetKey: string) {
 //         };
 //     }, [callback]);
 // }
+
+export const useIsomorphicLayoutEffect =
+    typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+export function useScrollPosition(
+    effect: (props: ScrollProps) => void,
+    deps?: DependencyList,
+    element?: ElementRef,
+    useWindow?: boolean,
+    wait?: number,
+    boundingElement?: ElementRef
+): void {
+    const position = useRef(getScrollPosition({ useWindow, boundingElement }));
+
+    let throttleTimeout: number | null = null;
+
+    const callBack = () => {
+        const currentPosition = getScrollPosition({
+            element,
+            useWindow,
+            boundingElement,
+        });
+        effect({ previousPos: position.current, currentPos: currentPosition });
+        position.current = currentPosition;
+        throttleTimeout = null;
+    };
+
+    useIsomorphicLayoutEffect(() => {
+        if (!isBrowser) {
+            return undefined;
+        }
+
+        const handleScroll = () => {
+            if (wait && throttleTimeout === null) {
+                throttleTimeout = window.setTimeout(callBack, wait);
+            } else {
+                callBack();
+            }
+
+            return () => {
+                if (boundingElement) {
+                    boundingElement.current?.removeEventListener(
+                        'scroll',
+                        handleScroll
+                    );
+                } else {
+                    window.removeEventListener('scroll', handleScroll);
+                }
+
+                if (throttleTimeout) {
+                    clearTimeout(throttleTimeout);
+                }
+            };
+        };
+    }, deps);
+}
+
+useScrollPosition.defaultProps = {
+    deps: [],
+    element: false,
+    useWindow: false,
+    wait: null,
+    boundingElement: false,
+};
 
 export function useCopyToClipboard(text: string) {}

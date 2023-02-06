@@ -27,7 +27,7 @@ export const useApplicationStore = create<State>()((set) => ({
     // implement get from local storage too...
     // Breadcrumbs for tracking folders
     breadcrumbs: [],
-    timeInterval: 60,
+    timeInterval: 30,
     activeDate: new Date(),
     actingOnDateRange: false,
     setActingOnDateRange: (value: boolean) => set({ actingOnDateRange: value }),

@@ -46,6 +46,7 @@ import {
     MdOutlineLockOpen,
     MdOutlineTimer,
     MdDateRange,
+    MdTimeline,
 } from 'react-icons/md';
 
 // global store
@@ -61,6 +62,7 @@ import { Auth, Hub } from 'aws-amplify';
 import AuthWrapper from '../wrappers/AuthWrapper';
 import Form from '../auth/Form';
 import { useApplicationStore } from '@/stores/ApplicationStore';
+import { AiOutlineGroup } from 'react-icons/ai';
 
 type SlideoverProps = {
     placement?: 'left' | 'right';
@@ -75,6 +77,8 @@ const sidebarTabs = [
     { name: 'Media', icon: BsImage },
     { name: 'Settings', icon: IoSettingsOutline },
 ];
+
+const timeIntervals = [15, 30, 45, 60];
 
 const mockBreadcrumbs = ['work', 'clients', 'c-linx'];
 
@@ -357,6 +361,18 @@ const Slideover = ({
                                                                         </button>
                                                                     )}
                                                                 </Menu.Item>
+                                                                <Menu.Item>
+                                                                    {() => (
+                                                                        <button className="group flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-slate-200">
+                                                                            <AiOutlineGroup
+                                                                                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                                aria-hidden="true"
+                                                                            />
+                                                                            Group
+                                                                            Notes
+                                                                        </button>
+                                                                    )}
+                                                                </Menu.Item>
                                                             </div>
                                                             <div className="py-1">
                                                                 <Menu.Item>
@@ -397,6 +413,44 @@ const Slideover = ({
                                                                             Date
                                                                             Range
                                                                         </button>
+                                                                    )}
+                                                                </Menu.Item>
+                                                                <Menu.Item>
+                                                                    {() => (
+                                                                        <div className="group flex flex-col justify-start w-full px-4 py-2 text-sm text-gray-700 gap-y-2 hover:bg-slate-200">
+                                                                            <div className="flex">
+                                                                                <MdTimeline
+                                                                                    className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                                                                    aria-hidden="true"
+                                                                                />
+                                                                                <label
+                                                                                    htmlFor="timeInterval"
+                                                                                    className="block text-sm text-gray-700"
+                                                                                >
+                                                                                    Time
+                                                                                    interval
+                                                                                </label>
+                                                                            </div>
+
+                                                                            {/* <div className="flex justify-between">
+                                                                                {timeIntervals.map(
+                                                                                    (
+                                                                                        n
+                                                                                    ) => (
+                                                                                        <button
+                                                                                            className="rounded-md p-1 "
+                                                                                            key={
+                                                                                                n
+                                                                                            }
+                                                                                        >
+                                                                                            {
+                                                                                                n
+                                                                                            }
+                                                                                        </button>
+                                                                                    )
+                                                                                )}
+                                                                            </div> */}
+                                                                        </div>
                                                                     )}
                                                                 </Menu.Item>
                                                             </div>

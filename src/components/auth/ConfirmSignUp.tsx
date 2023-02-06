@@ -38,7 +38,7 @@ const ConfirmSingUp = (props: ConfirmSignUp) => {
             <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
                 <div>
                     <label
-                        htmlFor="email"
+                        htmlFor="confirmationCode"
                         className="block text-sm font-medium text-gray-700"
                     >
                         Confirmation Code

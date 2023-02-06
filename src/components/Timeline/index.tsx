@@ -52,7 +52,7 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
             intervals =
                 (minutesInHour / timeInterval) *
                 differenceInHours(
-                    startOfDay(selectedDateRange.start),
+                    selectedDateRange.start,
                     selectedDateRange.end
                 );
         } else {
@@ -63,7 +63,7 @@ const Timeline = ({ showCalendar, ...props }: TimelineProps) => {
                 (minutesInHour / timeInterval) *
                 differenceInHours(
                     startOfDay(new Date()),
-                    subDays(new Date(), 2)
+                    subDays(new Date(), 1)
                 );
         }
 
