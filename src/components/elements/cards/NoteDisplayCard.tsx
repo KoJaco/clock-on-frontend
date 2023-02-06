@@ -41,16 +41,6 @@ const NoteDisplayCard = ({ tags, folder, ...props }: props) => {
                             </span>
                         </button>
                     </Fragment>
-                    // <span
-                    //     key={index}
-                    //     style={{
-                    //         backgroundColor: tag.color.value,
-                    //         color: tag.color.textDark ? 'black' : 'white',
-                    //     }}
-                    //     className="flex w-auto items-center rounded-full px-2 py-0.5 text-xs"
-                    // >
-                    //     {tag.text}
-                    // </span>
                 ))}
             </div>
         </div>

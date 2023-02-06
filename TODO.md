@@ -1,0 +1,7 @@
+-   1. Refactor code, needs to be neater, comments added, etc... should folders be included?
+-   2. Build out application logic store, using state variables to determine styling/what to display.
+    -   Tabs should be rendered nicely, maybe use headless ui for displaying flow in.
+-   3. Build out menus for each tab, menu content should change based on tab.
+-   4. Writeup for what I'm trying to do in each section.
+-   5. Editor design, note creation.
+-   6. in the timeline view, notes close together can be grouped by colour (think activity colours), or else they can have their own cards... List display will be date/time, title or first line truncated, any tags.

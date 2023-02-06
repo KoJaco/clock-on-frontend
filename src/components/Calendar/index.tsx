@@ -21,6 +21,7 @@ import {
     isBefore,
     isAfter,
     subDays,
+    differenceInDays,
 } from 'date-fns';
 
 import { BsArrowsCollapse, BsArrowsExpand } from 'react-icons/bs';
@@ -66,6 +67,8 @@ const Calendar = () => {
         end: selectedDateRange.end,
     });
 
+    const [isEvenClick, setIsEvenClick] = useState<Boolean>(false);
+
     // clickoutside ref
     const calendarRef = useRef<HTMLDivElement>(null);
 
@@ -97,24 +100,61 @@ const Calendar = () => {
         setActingOnDateRange(false);
     }
 
+    const handleSetLocalDateRangeAlt = useCallback(
+        // This is a nicer solution, but need to change generated days JSX.
+        // instead of using isBefore, make an inBetween boolean
+        // always sets start on odd click, always sets end on even click.
+        (selectedDate: Date) => {
+            switch (isEvenClick) {
+                case false:
+                    setLocalDateRange({
+                        ...localDateRange,
+                        start: selectedDate,
+                    });
+                    setIsEvenClick(!isEvenClick);
+                    // console.log(localDateRange);
+                    break;
+                case true:
+                    setLocalDateRange({
+                        ...localDateRange,
+                        end: selectedDate,
+                    });
+                    setIsEvenClick(!isEvenClick);
+                    // console.log(localDateRange);
+
+                    break;
+                default:
+                    throw new Error('Something went wrong');
+            }
+        },
+        [isEvenClick, localDateRange]
+    );
+
     const handleSetLocalDateRange = useCallback(
         (selectedDate: Date) => {
             // If we have a start but no end, set the end
             if (localDateRange.start && !localDateRange.end) {
-                console.log('Hit No end');
-                setLocalDateRange({
-                    ...localDateRange,
-                    end: selectedDate,
-                });
+                // if we've selected a date before the start...
+                if (isBefore(selectedDate, localDateRange.start)) {
+                    setLocalDateRange({
+                        end: localDateRange.start,
+                        start: selectedDate,
+                    });
+                } else {
+                    setLocalDateRange({
+                        ...localDateRange,
+                        end: selectedDate,
+                    });
+                }
                 // if we do not have a start, set the start
             } else if (!localDateRange.start) {
-                console.log('Hit No start');
                 setLocalDateRange({
                     ...localDateRange,
                     start: selectedDate,
                 });
-                // If we have both and selected date is before, set a new start date
-            } else if (
+            }
+            // If we have both and selected date is before, set a new start date
+            else if (
                 localDateRange.start &&
                 localDateRange.end &&
                 isBefore(selectedDate, localDateRange.start)
@@ -146,21 +186,22 @@ const Calendar = () => {
             const week: JSX.Element[] = [];
 
             for (let day = 0; day < 7; day++) {
-                const cloneDate = currentDate;
+                const clonedDate = currentDate;
                 let isInRange: boolean | null;
-                const isBeforeEnd = end && isBefore(cloneDate, end);
-                const isAfterStart = start && isAfter(cloneDate, start);
+                const isBeforeEnd = end && isBefore(clonedDate, end);
+                const isAfterStart = start && isAfter(clonedDate, start);
 
                 isInRange = isBeforeEnd && isAfterStart;
 
                 week.push(
                     <button
-                        key={cloneDate.toLocaleDateString()}
+                        key={clonedDate.toLocaleDateString()}
                         className={clsx(
                             'py-1 focus:z-10 bg-white',
                             !isInRange && 'hover:bg-gray-100',
                             // if we're in the range...
-                            isInRange && 'bg-indigo-100 text-gray-400',
+                            isInRange &&
+                                'bg-indigo-100 text-indigo-800 font-semibold',
                             // If our current date and active date are the same month, we want the background to be white/dark (not seemingly blanked out)
                             isSameMonth(currentDate, activeDate)
                                 ? 'bg-white'
@@ -188,7 +229,7 @@ const Calendar = () => {
                                 'font-semibold text-indigo-600'
                         )}
                         onClick={() => {
-                            handleSetLocalDateRange(cloneDate);
+                            handleSetLocalDateRange(clonedDate);
                         }}
                     >
                         <time
@@ -233,10 +274,10 @@ const Calendar = () => {
             let currentDate = date;
             const week = [];
             for (let day = 0; day < 7; day++) {
-                const cloneDate = currentDate;
+                const clonedDate = currentDate;
                 week.push(
                     <button
-                        key={cloneDate.toLocaleDateString()}
+                        key={clonedDate.toLocaleDateString()}
                         className={clsx(
                             'py-1 hover:bg-gray-100 focus:z-10 rounded-sm bg-white',
                             isSameMonth(currentDate, activeDate)
@@ -253,7 +294,7 @@ const Calendar = () => {
                                 'font-semibold text-indigo-600'
                         )}
                         onClick={() => {
-                            setSelectedDate(cloneDate);
+                            setSelectedDate(clonedDate);
                         }}
                     >
                         <time

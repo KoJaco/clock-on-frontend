@@ -7,13 +7,19 @@ import { create } from 'zustand';
  */
 
 export interface State {
+    // Current Tab
+    // currentTab: 'notes' | 'folders' | 'tags' | 'shared' | 'media' | 'settings' | 'profile';
+
+    // breadcrumbs for tracking folder hierarchy
     breadcrumbs: { id: string; title: string; uniquePath: string }[];
+
+    // Everything related to the calendar/time-based notes components
     timeInterval: 15 | 30 | 45 | 60;
     setTimeInterval: (value: 15 | 30 | 45 | 60) => void;
     activeDate: Date;
     setActiveDate: (date: Date) => void;
-    // used in Timeline, Slideover, and Calendar components
     actingOnDateRange: boolean;
+    // need another boolean here for selecting date range, actingOn should be a higher up state variable for controlling note view.
     setActingOnDateRange: (value: boolean) => void;
     selectedDate: Date;
     setSelectedDate: (date: Date) => void;
@@ -22,6 +28,17 @@ export interface State {
         start: Date | null;
         end: Date | null;
     }) => void;
+    // timeline collapsed?
+
+    // Related to note editor, solely for styling / controlling application flow (NOT related to server state)
+    // isCreatingNote: boolean;
+    // isEditingNote: boolean;
+    // selectedNoteRange: {first: Note | null, last: Note | null}};
+
+    // Related to clocking on
+    // isEditingClockOn: boolean;
+
+    // Related to tagging
 }
 
 export const useApplicationStore = create<State>()((set) => ({
